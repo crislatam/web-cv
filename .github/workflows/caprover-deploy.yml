@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Deploy to CapRover
 
 on:
   push:
@@ -7,9 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,4 +21,14 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ github.sha }}
-
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Install CapRover CLI
+        run: npm install -g caprover
+      - name: Deploy App to CapRover
+        run: |
+          caprover deploy \
+            --appToken ${{ secrets.CAPROVER_APP_TOKEN }} \
+            --appName site \
+            --caproverUrl https://${{ secrets.CAPROVER_SERVER }} \
+            --imageName ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ github.sha }}
