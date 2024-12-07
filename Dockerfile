@@ -1,9 +1,11 @@
 # Utiliza la imagen oficial de Nginx
 FROM nginx:latest
 
+WORKDIR /usr/share/nginx/html
+
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY . /usr/share/nginx/html
+COPY . .
 
 EXPOSE 80
 
